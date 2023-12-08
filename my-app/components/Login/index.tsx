@@ -1,15 +1,18 @@
 import styles from './index.module.scss';
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import CountDown from 'components/CountDown';
+import request from 'service/fetch';
+import { useStore } from 'store';
+import { observer } from 'mobx-react-lite';
 interface LoginProps {
   isShow: boolean;
   onClose: Function;
 }
 
-export const Login = function (props: LoginProps) {
+const Login = function (props: LoginProps) {
   const { isShow = false, onClose } = props;
-  console.log(onClose);
 
   const [form, setForm] = useState({
     phone: '',
@@ -17,25 +20,61 @@ export const Login = function (props: LoginProps) {
   });
 
   const [isShowVerifyCode, setIsShowVerifyCode] = useState(false);
-
+  const store = useStore();
   /**
    * 关闭Login模态
    */
   const handleClose = function () {
-    onClose();
+    typeof onClose === 'function' && onClose();
+    setIsShowVerifyCode(false);
   };
 
   /**
    * 获取验证码
    */
   const handleGetVerifyCode = function () {
-    setIsShowVerifyCode(true);
+    if (!form?.phone) {
+      message.warning('请输入手机号');
+      return;
+    }
+    // 获取手机号
+    request
+      .post('/api/user/sendVerifyCode', {
+        to: form.phone,
+        templateId: 1,
+      })
+      .then((res: { [code: string]: any }) => {
+        if (res?.code === 0) {
+          setIsShowVerifyCode(true);
+        } else {
+          message.error(res?.msg || '未知错误');
+        }
+        console.log(res);
+      });
   };
 
   /**
    * 登录
    */
-  const handleLogin = function () {};
+  const handleLogin = function () {
+    request
+      .post('/api/user/login', {
+        ...form,
+        identity_type: 'phone',
+      })
+      .then((res: Record<string, any>) => {
+        if (res?.code === '0') {
+          // 登陆成功
+          store.user.setUserInfo(res.data);
+          // TODO
+          message.success('登录成功');
+          // 关闭登录模态
+          handleClose();
+        } else {
+          message.error(res?.msg || '未知错误');
+        }
+      });
+  };
 
   /**
    * 使用github账号登录
@@ -53,10 +92,6 @@ export const Login = function (props: LoginProps) {
   const handleCountDownEnd = function () {
     setIsShowVerifyCode(false);
   };
-
-  useEffect(() => {
-    console.log('login');
-  }, []);
 
   return (
     <>
@@ -107,3 +142,5 @@ export const Login = function (props: LoginProps) {
     </>
   );
 };
+
+export default observer(Login);

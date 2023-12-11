@@ -6,26 +6,27 @@ import type { ISession } from 'pages/api';
 import { AppDataSource } from 'db';
 import { User, UserAuth } from 'db/entity';
 import { Cookie } from 'next-cookie';
-import { setCookie } from 'utils';
+
+import { saveUserInfoToSessionAndCookie } from 'utils';
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   // 从请求体中拿到手机号和验证码
   const { phone, verify, identity_type } = req.body;
   const session: ISession = await getIronSession(req, res, ironOption);
-  const cookies = Cookie.fromApiRoute(req,res)
+  const cookies = Cookie.fromApiRoute(req, res);
 
-  async function saveUserInfoToSession(userInfo: Record<string, any>) {
-    for (const key in userInfo) {
-      if (Object.prototype.hasOwnProperty.call(userInfo, key)) {
-        session[key] = userInfo[key];
-      }
-    }
+  // async function saveUserInfoToSession(userInfo: Record<string, any>) {
+  //   for (const key in userInfo) {
+  //     if (Object.prototype.hasOwnProperty.call(userInfo, key)) {
+  //       session[key] = userInfo[key];
+  //     }
+  //   }
 
-    // 保存数据到cookie
-    setCookie(cookies, userInfo as any);
+  //   // 保存数据到cookie
+  //   setCookie(cookies, userInfo as any);
 
-    await session.save();
-  }
+  //   await session.save();
+  // }
 
   const db = await AppDataSource;
   const userAuthsRepo = await db.getRepository(UserAuth);
@@ -40,14 +41,12 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       relations: ['user'],
     });
 
-    console.log(userAuth);
-
     if (userAuth) {
       // 已存在用户
       const user = userAuth.user;
       const { id, nickname, avatar } = user;
 
-      await saveUserInfoToSession({
+      await saveUserInfoToSessionAndCookie(cookies, session, {
         userId: id,
         nickname,
         avatar,
@@ -82,7 +81,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
 
       const resUserAuth = await userAuthsRepo.save(userAuth);
 
-      await saveUserInfoToSession({
+      await saveUserInfoToSessionAndCookie(cookies, session, {
         userId: resUserAuth.user.id,
         nickname: resUserAuth.user.nickname,
         avatar: resUserAuth.user.avatar,

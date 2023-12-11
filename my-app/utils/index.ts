@@ -1,3 +1,5 @@
+import type { ISession } from 'pages/api';
+
 interface CookieInfo {
   userId: number;
   avatar: string;
@@ -44,4 +46,20 @@ export function clearCookie(cookies: any) {
     path,
     expiress,
   });
+}
+
+export async function saveUserInfoToSessionAndCookie(cookies:any, session:ISession, userInfo:Record<string, any>) {
+  for (const key in userInfo) {
+    if (Object.prototype.hasOwnProperty.call(userInfo, key)) {
+      session[key] = userInfo[key];
+    }
+  }
+
+  // 保存数据到cookie
+  setCookie(cookies, userInfo as any);
+
+  await session.save();
+
+  console.log('保存信息到cookie成功');
+  
 }

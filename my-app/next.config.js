@@ -8,6 +8,15 @@ const nextConfig = {
     'rc-pagination',
     'rc-picker',
   ],
+  experimental: {
+    forceSwcTransforms: true,
+  },
+  images: {
+    //配置可以下载图片资源的域名
+    domains: ['https://img1.baidu.com'],
+  },
 };
+// next.config.js
+const removeImports = require('next-remove-imports')();
 
-module.exports = nextConfig;
+module.exports = removeImports(nextConfig);

@@ -49,7 +49,6 @@ const Login = function (props: LoginProps) {
         } else {
           message.error(res?.msg || '未知错误');
         }
-        console.log(res);
       });
   };
 
@@ -79,7 +78,18 @@ const Login = function (props: LoginProps) {
   /**
    * 使用github账号登录
    */
-  const handleOAuthGithub = function () {};
+  const handleOAuthGithub = function () {
+    // client-secret: c3ccc448d10eb60221771eb83f52d8e4739149de;
+    // client-id: 6fe217ae3fd9dea74c95
+    const githubClientId = '6fe217ae3fd9dea74c95';
+    const redirectUri = 'http://localhost:3000/api/oauth/redirect';
+
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}`;
+
+    // window.open(
+    //   `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}`
+    // );
+  };
 
   const handleFormChange = function (e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -91,6 +101,24 @@ const Login = function (props: LoginProps) {
    */
   const handleCountDownEnd = function () {
     setIsShowVerifyCode(false);
+  };
+
+  /**
+   * 仅供开发环境测试使用
+   */
+  const testLogin = function () {
+    request.post('/api/user/testlogin', {}).then((res: Record<string, any>) => {
+      if (res?.code === '0') {
+        // 登陆成功
+        store.user.setUserInfo(res.data);
+        // TODO
+        message.success('登录成功');
+        // 关闭登录模态
+        handleClose();
+      } else {
+        message.error(res?.msg || '未知错误');
+      }
+    });
   };
 
   return (
@@ -135,6 +163,9 @@ const Login = function (props: LoginProps) {
             </div>
             <div className={styles.loginPrivacy}>
               注册登录即表示同意<a href="">隐私政策</a>
+            </div>
+            <div className={styles.loginTest} onClick={testLogin}>
+              登入测试账号
             </div>
           </div>
         </div>

@@ -20,10 +20,12 @@ const Navbar: NextPage = () => {
   const store = useStore();
   const { userId, avatar } = store.user.userInfo;
   const [isShowLogin, setIsShowLogin] = useState(false);
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
 
   // 跳转到个人页
-  const handleGotoPersoalPage = function () {};
+  const handleGotoPersoalPage = function () {
+    push(`/user/${userId}`);
+  };
 
   // 退出登录
   const handleLogout = function () {
@@ -37,7 +39,13 @@ const Navbar: NextPage = () => {
     });
   };
 
-  const handleGotoEditorPage = function () {};
+  const handleGotoEditorPage = function () {
+    if (userId) {
+      push('/editor/new');
+    } else {
+      message.warning('请先登录');
+    }
+  };
   const handleLogin = function () {
     setIsShowLogin(true);
   };

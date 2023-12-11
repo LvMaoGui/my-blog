@@ -3,3 +3,19 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+a{
+  text-decoration: none;
+  color: #495057;
+}
+
+body{
+  background-color: #e7f5ff;
+}
+
+.content-layout{
+  width: 1080px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+}

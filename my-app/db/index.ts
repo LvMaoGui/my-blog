@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import type { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
-import { UserAuth, User } from './entity'
+import { UserAuth, User, Article, Comment } from './entity'
 
 const type = process.env.DATABASE_TYPE as MysqlConnectionOptions["type"];
 const host = process.env.DATABASE_HOST;
@@ -19,5 +19,5 @@ export const AppDataSource = new DataSource({
   database, //使用的数据库名字
   synchronize: true, // 是否同步，如果为true，新建的实体会更新建表或更新字段
   logging: true, // 是否开启日志 为true 为打印执行的sql
-  entities: [UserAuth,User], // 加载entity目录下的ts文件为model
+  entities: [UserAuth,User,Comment,Article], // 加载entity目录下的ts文件为model
 }).initialize();

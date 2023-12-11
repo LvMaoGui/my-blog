@@ -8,17 +8,25 @@ interface MyAppProps extends AppProps {
 }
 
 function MyApp({ Component, pageProps, initialValue }: MyAppProps) {
+  const renderLayout = function () {
+    if ((Component as any).layout === null) {
+      return <Component {...pageProps} />;
+    } else {
+      return (
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      );
+    }
+  };
+
   return (
-    <StoreProvide initialValue={initialValue}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </StoreProvide>
+    <StoreProvide initialValue={initialValue}>{renderLayout()}</StoreProvide>
   );
 }
 
 MyApp.getInitialProps = async function ({ ctx }: { ctx: any }) {
-  const { userId, avatar, nickname } = ctx?.req.cookies || {};
+  const { userId, avatar, nickname } = ctx?.req?.cookies || {};
   return {
     initialValue: {
       user: {

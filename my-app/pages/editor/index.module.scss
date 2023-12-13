@@ -3,9 +3,13 @@
 
   .operation{
     display: flex;
+    gap: 5px;
 
     .title{
-      width: 95%;
+      width: 80%;
+    }
+    .selectTags{
+      width: 15%;
     }
 
     button{

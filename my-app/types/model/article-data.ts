@@ -13,6 +13,7 @@ export type ArticleType = Pick<
   | 'user'
   | 'views'
   | 'comments'
+  | 'tags'
 > & {
   user: UserType,
   comments: CommentType[],

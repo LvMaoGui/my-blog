@@ -4,7 +4,7 @@ import { getIronSession } from 'iron-session';
 import { ironOption } from 'config';
 import type { ISession } from 'pages/api';
 import { AppDataSource } from 'db';
-import { User, Article } from 'db/entity';
+import { User, Article, Tag } from 'db/entity';
 
 import { EXCEPTION_ARTICLE } from 'pages/api/config/codes';
 
@@ -13,17 +13,22 @@ export default async function publish(
   res: NextApiResponse
 ) {
   const session: ISession = await getIronSession(req, res, ironOption);
-  const { title = '', content = '' } = req.body;
+  const { title = '', content = '', tagIds = [] } = req.body;
 
   // 连接数据库
   const db = await AppDataSource;
   const userRepo = await db.getRepository(User);
   const articleRepo = await db.getRepository(Article);
+  const tagRepo = await db.getRepository(Tag);
 
   const user = await userRepo.findOne({
     where: {
       id: session.userId,
     },
+  });
+
+  const tags = await tagRepo.find({
+    where: tagIds.map((tagId: number) => ({ id: tagId })),
   });
 
   const article = new Article();
@@ -36,6 +41,14 @@ export default async function publish(
 
   if (user) {
     article.user = user;
+  }
+
+  if (tags) {
+    const newTags = tags.map((tag) => {
+      tag.article_count += 1;
+      return tag;
+    });
+    article.tags = newTags;
   }
 
   const resArticle = await articleRepo.save(article);

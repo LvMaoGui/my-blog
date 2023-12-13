@@ -13,7 +13,12 @@ export const EXCEPTION_ARTICLE = {
   },
 };
 
-export const EXCEPTION_USER = {};
+export const EXCEPTION_USER = {
+  NOT_LOGIN: {
+    code: 1001,
+    msg: '未登录',
+  },
+};
 export const EXCEPTION_COMMENT = {
   PUBLISH_FAILED: {
     code: 4001,
@@ -22,5 +27,16 @@ export const EXCEPTION_COMMENT = {
   PUBLISH_ASSOCFAILED: {
     code: 4002,
     msg: '发表评论失败, 用户或文章信息有误',
+  },
+};
+
+export const EXCEPTION_TAG = {
+  FOLLOW_FAILED: {
+    code: 5001,
+    msg: '关注失败',
+  },
+  UNFOLLOW_FAILED: {
+    code: 5002,
+    msg: '取关失败',
   },
 };

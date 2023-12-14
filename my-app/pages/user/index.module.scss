@@ -1,0 +1,89 @@
+.userDetail{
+  // margin-bottom: 60px;
+  width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+
+  .left{
+    width: 820px;
+    background-color: #fff;
+    padding: 20px;
+
+    .userInfo{
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      .avatar{
+        margin-right: 50px;
+      }
+
+      .nickname{
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color:#495057;
+      }
+
+      .desc{
+        color:#495057;
+        margin-bottom: 5px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        svg{
+          width: 12px;
+          height: 12px;
+        }
+      }
+
+      .editProfile{
+        margin-left: auto;
+      }
+    }
+  }
+
+  .right{
+    width: 260px;
+    background-color: #fff;
+
+    .achievement{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      padding: 10px;
+    }
+
+    .number{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header{
+      font-size: 20px;
+      font-weight: bold;
+      color:#495057;
+    }
+
+    .wrapper{
+      display: flex;
+      gap: 5px;
+    }
+  }
+}
+
+.userProfile{
+  .title{
+    color:#495057;
+  }
+  form{
+    width: 500px;
+    margin-top: 60px;
+  }
+}

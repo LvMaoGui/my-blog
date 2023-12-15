@@ -16,8 +16,6 @@ const TagFilter = ({ tags, setArticlesData }: TagFilterProps) => {
   const [selectedTags, setSelectedTags] = useState<{tag:string,id:number}[]>([]);
 
   const handleChange = (tag: string, id: number, checked: boolean) => {
-    console.log(tag, checked);
-
     const nextSelectedTags = checked
       ? [...selectedTags, { tag, id }]
       : selectedTags.filter((t) => t.id !== id);
@@ -35,7 +33,7 @@ const TagFilter = ({ tags, setArticlesData }: TagFilterProps) => {
           setArticlesData(res.data);
         }
       });
-  }, [selectedTags]);
+  }, [selectedTags,setArticlesData]);
 
   return (
     <div className={styles.container}>

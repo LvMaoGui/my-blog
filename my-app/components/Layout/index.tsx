@@ -1,8 +1,8 @@
-import type { NextPage } from 'next';
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer';
+import { ReactNode } from 'react';
 
-const Layout: NextPage = ({ children }) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div>
       <Navbar />

@@ -23,7 +23,7 @@ const NewEditor: NextPage = function () {
   const [content, setContent] = useState('**Hello world!!!**');
   const [title, setTitle] = useState('');
   const [allTags, setAllTags] = useState([]);
-  const [tagIds, setTagIds] = useState([]);
+  const [tagIds, setTagIds] = useState<number[]>([]);
 
   const store = useStore();
   const { userId } = store.user.userInfo;
@@ -69,9 +69,7 @@ const NewEditor: NextPage = function () {
     setTitle(e.target.value);
   };
 
-  const handleSelectChange = function (value) {
-    console.log(value);
-
+  const handleSelectChange = function (value:any[]) {
     setTagIds(value);
   };
 
@@ -117,6 +115,6 @@ const NewEditor: NextPage = function () {
   );
 };
 
-NewEditor.layout = null;
+(NewEditor as any).layout = null;
 
 export default observer(NewEditor);

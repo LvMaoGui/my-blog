@@ -10,7 +10,6 @@ export default async function update(
   res: NextApiResponse
 ) {
   const { title = '', content = '', articleId = '', tagIds=[] } = req.body;
-  console.log('tagIds😀',tagIds);
   
   // 连接数据库
   const db = await AppDataSource;
@@ -37,7 +36,6 @@ export default async function update(
   }
 
   if (tags) {
-    console.log('tags😀',tags);
     
     const articleRelTags = article.tags
 

@@ -43,7 +43,6 @@ export default async function publish(
   }
 
   const resComment = await commentRepo.save(comment);
-  console.log('user', user, article);
 
   if (resComment) {
     res.status(200).json({ code: '0', data: resComment, msg: '发表评论成功' });

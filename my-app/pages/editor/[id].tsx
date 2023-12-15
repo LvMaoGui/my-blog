@@ -35,7 +35,6 @@ export async function getServerSideProps({
     },
     relations: ['user', 'tags'],
   });
-  console.log('article😀', article);
 
   return {
     props: {

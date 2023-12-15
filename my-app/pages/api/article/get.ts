@@ -11,8 +11,6 @@ export default async function publish(
   const articleRepo = await db.getRepository(Article);
   let articles = [];
 
-  console.log('tagIds', tagIds);
-
   if (tagIds.length > 0) {
     articles = await articleRepo.find({
       relations: ['user', 'tags'],

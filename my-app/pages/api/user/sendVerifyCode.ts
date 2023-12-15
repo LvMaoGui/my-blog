@@ -40,7 +40,6 @@ export default async function sendVerifyCode(
       },
     }
   );
-  console.log('response😀',response);
   
   const { statusCode, statusMsg, templateSMS } = response as Record<string,any>;
   if (statusCode === '000000') {

@@ -59,7 +59,5 @@ export async function saveUserInfoToSessionAndCookie(cookies:any, session:ISessi
   setCookie(cookies, userInfo as any);
 
   await session.save();
-
-  console.log('保存信息到cookie成功');
   
 }

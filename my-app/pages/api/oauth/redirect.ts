@@ -19,7 +19,6 @@ export default async function redirect(
   // http://localhost:3000/api/oauth/redirect
 
   const { code } = req.query;
-  console.log('code😀',code);
 
   const githubClientId = '6fe217ae3fd9dea74c95';
   const githubClientSecret = 'c3ccc448d10eb60221771eb83f52d8e4739149de';
@@ -34,12 +33,10 @@ export default async function redirect(
     { headers: { Accept: 'application/json' } }
   );
 
-  console.log('result😀',result);
 
   const { access_token } = result as any;
 
   // 根据access_token获取用户信息
-  console.log('access_token😀',access_token);
 
 
   // 获取用户信息的url
@@ -53,7 +50,6 @@ export default async function redirect(
     }
   })
 
-  console.log('githubUserInfo',githubUserInfo);
 
   const cookies = Cookie.fromApiRoute(req, res);
   const db = await AppDataSource;

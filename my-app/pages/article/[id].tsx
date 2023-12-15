@@ -18,7 +18,6 @@ export async function getServerSideProps({
 }: {
   params: Record<string, any>,
 }) {
-  console.log('params😀', params);
   const articleId = params.id;
 
   const db = await AppDataSource;
@@ -29,7 +28,6 @@ export async function getServerSideProps({
     },
     relations: ['user', 'comments', 'comments.user'],
   });
-  console.log('article😀', article);
   if (article) {
     // 阅读次数+1
     article.views = article.views + 1;

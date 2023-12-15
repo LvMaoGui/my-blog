@@ -52,7 +52,6 @@ export default async function publish(
   }
 
   const resArticle = await articleRepo.save(article);
-  console.log('user', user, article);
 
   if (resArticle) {
     res.status(200).json({ code: '0', data: resArticle, msg: '发布文章成功' });

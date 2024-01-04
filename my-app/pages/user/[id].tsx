@@ -12,7 +12,21 @@ import {
 import ArticleListItem from '@/components/ArticleListItem';
 import styles from './index.module.scss';
 
-export async function getServerSideProps({ params }: { params: any }) {
+export async function getStaticPaths() {
+  const db = await AppDataSource;
+  const users = await db.getRepository(User).find();
+  console.log('users😀', users);
+
+  const userIds = users.map((user) => {
+    return { params: { id: String(user.id) } };
+  });
+  return {
+    paths: userIds,
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }: { params: any }) {
   const userId = params.id;
 
   const db = await AppDataSource;
@@ -38,6 +52,33 @@ export async function getServerSideProps({ params }: { params: any }) {
     },
   };
 }
+
+// export async function getServerSideProps({ params }: { params: any }) {
+//   const userId = params.id;
+
+//   const db = await AppDataSource;
+//   const user = await db.getRepository(User).findOne({
+//     where: {
+//       id: Number(userId),
+//     },
+//   });
+
+//   const articles = await db.getRepository(Article).find({
+//     where: {
+//       user: {
+//         id: Number(userId),
+//       },
+//     },
+//     relations: ['user', 'tags'],
+//   });
+
+//   return {
+//     props: {
+//       userInfo: JSON.parse(JSON.stringify(user)),
+//       articles: JSON.parse(JSON.stringify(articles)),
+//     },
+//   };
+// }
 
 interface UserDetailProps {
   userInfo: UserType;

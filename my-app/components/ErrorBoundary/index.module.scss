@@ -1,0 +1,17 @@
+.errorContainer{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .tryAgainBtn{
+    height: 32px;
+    background-color:#3bc9db;
+    border: none;
+    color: #fff;
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+  }
+}

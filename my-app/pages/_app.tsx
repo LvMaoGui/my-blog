@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from 'components/Layout';
 import { StoreProvide } from 'store';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 interface MyAppProps extends AppProps {
   initialValue: Record<string, any>;
@@ -21,7 +22,9 @@ function MyApp({ Component, pageProps, initialValue }: MyAppProps) {
   };
 
   return (
-    <StoreProvide initialValue={initialValue}>{renderLayout()}</StoreProvide>
+    <ErrorBoundary>
+      <StoreProvide initialValue={initialValue}>{renderLayout()}</StoreProvide>
+    </ErrorBoundary>
   );
 }
 

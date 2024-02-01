@@ -19,6 +19,8 @@ import logo from 'public/Logo/logo.png';
 const Navbar: NextPage = () => {
   const store = useStore();
   const { userId, avatar } = store.user.userInfo;
+  console.log(avatar);
+
   const [isShowLogin, setIsShowLogin] = useState(false);
   const { pathname, push } = useRouter();
 

@@ -9,11 +9,16 @@ import { Cookie } from 'next-cookie';
 
 import { saveUserInfoToSessionAndCookie } from 'utils';
 
+const getAvatarByCurDomian = function (domain: string, url: string) {
+  return domain + url.replace('.', '');
+};
+
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   // 从请求体中拿到手机号和验证码
   const { phone, verify, identity_type } = req.body;
   const session: ISession = await getIronSession(req, res, ironOption);
   const cookies = Cookie.fromApiRoute(req, res);
+
 
   // async function saveUserInfoToSession(userInfo: Record<string, any>) {
   //   for (const key in userInfo) {
@@ -49,7 +54,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       await saveUserInfoToSessionAndCookie(cookies, session, {
         userId: id,
         nickname,
-        avatar,
+        avatar:getAvatarByCurDomian(req.headers['x-forwarded-proto'] + '://' + req.headers.host!,avatar),
       });
 
       res.status(200).json({
@@ -58,7 +63,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
         data: {
           userId: id,
           nickname,
-          avatar,
+          avatar:getAvatarByCurDomian(req.headers['x-forwarded-proto'] + '://'+req.headers.host!,avatar),
         },
       });
     } else {
@@ -84,7 +89,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       await saveUserInfoToSessionAndCookie(cookies, session, {
         userId: resUserAuth.user.id,
         nickname: resUserAuth.user.nickname,
-        avatar: resUserAuth.user.avatar,
+        avatar: getAvatarByCurDomian(req.headers['x-forwarded-proto'] + '://'+req.headers.host!, resUserAuth.user.avatar),
       });
 
       res.status(200).json({
@@ -93,7 +98,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
         data: {
           userId: resUserAuth.user.id,
           nickname: resUserAuth.user.nickname,
-          avatar: resUserAuth.user.avatar,
+          avatar: getAvatarByCurDomian(req.headers['x-forwarded-proto'] + '://'+req.headers.host!, resUserAuth.user.avatar),
         },
       });
     }

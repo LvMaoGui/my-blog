@@ -8,7 +8,6 @@ import { Button, Avatar, Dropdown, message } from 'antd';
 import { LoginOutlined, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { observer } from 'mobx-react-lite';
-
 import Login from 'components/Login';
 import { useStore } from 'store';
 import request from 'service/fetch';

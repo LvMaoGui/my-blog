@@ -19,7 +19,6 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
   const session: ISession = await getIronSession(req, res, ironOption);
   const cookies = Cookie.fromApiRoute(req, res);
 
-
   // async function saveUserInfoToSession(userInfo: Record<string, any>) {
   //   for (const key in userInfo) {
   //     if (Object.prototype.hasOwnProperty.call(userInfo, key)) {

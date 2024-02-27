@@ -13,8 +13,34 @@ body{
   background-color: #e7f5ff;
 }
 
+html{
+  font-size: 18px;
+}
+
+/* 在小屏幕上应用不同的样式 */
+@media screen and (width <= 600px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* 在中等屏幕上应用不同的样式 */
+@media screen and (width >= 601px) and (width <= 1024px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* 在大屏幕上应用不同的样式 */
+@media screen and (width>= 1025px) {
+  html {
+    font-size: 20px;
+  }
+}
+
 .content-layout{
   width: 1080px;
+  max-width: 100%;
   margin: 0 auto;
   background-color: #fff;
   padding: 20px;

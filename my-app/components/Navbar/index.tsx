@@ -4,10 +4,16 @@ import { navs } from './config';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { Button, Avatar, Dropdown, message } from 'antd';
-import { LoginOutlined, HomeOutlined } from '@ant-design/icons';
+import { Button, Avatar, Dropdown, message, Menu, Space } from 'antd';
+import {
+  LoginOutlined,
+  HomeOutlined,
+  TagsOutlined,
+  MessageOutlined,
+} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { observer } from 'mobx-react-lite';
+
 import Login from 'components/Login';
 import { useStore } from 'store';
 import request from 'service/fetch';
@@ -26,6 +32,31 @@ const Navbar: NextPage = () => {
   const handleGotoPersoalPage = function () {
     push(`/user/${userId}`);
   };
+
+  const switchMenuIcon = function (labelName: string) {
+    switch (labelName) {
+      case '首页':
+        return <HomeOutlined />;
+      case '咨询':
+        return <MessageOutlined />;
+      case '标签':
+        return <TagsOutlined />;
+    }
+  };
+
+  const MenuItems: MenuProps['items'] = navs.map(({ label, value }, index) => {
+    return {
+      label: (
+        <Space>
+          {switchMenuIcon(label)}
+          <Link key={label} href={{ pathname: value }}>
+            {label}
+          </Link>
+        </Space>
+      ),
+      key: value + index,
+    };
+  });
 
   // 退出登录
   const handleLogout = function () {
@@ -77,10 +108,16 @@ const Navbar: NextPage = () => {
   return (
     <div className={styles.navbar}>
       <section className={styles.logoArea}>
-        <Image src={logo.src} alt="logo" width={120} height={60} />
+        <Image
+          className={styles.logo}
+          width={120}
+          height={60}
+          src={logo.src}
+          alt="logo"
+        />
       </section>
       <section className={styles.linkArea}>
-        {navs?.map((nav) => (
+        {/* {navs?.map((nav) => (
           <Link
             className={pathname === nav.value ? styles.active : ''}
             key={nav?.label}
@@ -88,21 +125,28 @@ const Navbar: NextPage = () => {
           >
             {nav.label}
           </Link>
-        ))}
+        ))} */}
+        <Menu
+          style={{ flex: 'auto', minWidth: '0' }}
+          items={MenuItems}
+          mode="horizontal"
+        ></Menu>
       </section>
       <section className={styles.operationArea}>
-        <Button onClick={handleGotoEditorPage}>写文章</Button>
-        {userId ? (
-          <>
-            <Dropdown placement="bottomLeft" menu={{ items: menuItems }}>
-              <Avatar src={avatar} size={32} />
-            </Dropdown>
-          </>
-        ) : (
-          <Button type="primary" onClick={handleLogin}>
-            登录
-          </Button>
-        )}
+        <Space>
+          <Button onClick={handleGotoEditorPage}>写文章</Button>
+          {userId ? (
+            <>
+              <Dropdown placement="bottomLeft" menu={{ items: menuItems }}>
+                <Avatar src={avatar} size={32} />
+              </Dropdown>
+            </>
+          ) : (
+            <Button type="primary" onClick={handleLogin}>
+              登录
+            </Button>
+          )}
+        </Space>
       </section>
       <Login isShow={isShowLogin} onClose={handleClose} />
     </div>

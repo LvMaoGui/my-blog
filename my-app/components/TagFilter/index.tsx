@@ -9,7 +9,7 @@ const { CheckableTag } = Tag;
 
 interface TagFilterProps {
   tags: TagType[];
-  setArticlesData: Function;
+  setArticlesData: (data: any)=>void;
 }
 
 const TagFilter = ({ tags, setArticlesData }: TagFilterProps) => {

@@ -74,7 +74,11 @@ const ModifyEditor = function (props: ModifyEditorProps) {
         .then((res: any) => {
           if (res.code === '0') {
             message.success('更新成功');
-            articleId ? push(`/article/${articleId}`) : push('/');
+            if(articleId){
+              push(`/article/${articleId}`)
+            } else {
+              push('/')
+            }
           } else {
             message.error(res?.msg || '更新失败');
           }

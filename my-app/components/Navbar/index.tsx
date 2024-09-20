@@ -26,7 +26,7 @@ const Navbar: NextPage = () => {
   const { userId, avatar } = store.user.userInfo;
 
   const [isShowLogin, setIsShowLogin] = useState(false);
-  const { pathname, push } = useRouter();
+  const { push } = useRouter();
 
   // 跳转到个人页
   const handleGotoPersoalPage = function () {

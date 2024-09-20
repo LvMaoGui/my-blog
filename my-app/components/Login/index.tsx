@@ -8,7 +8,7 @@ import { useStore } from 'store';
 import { observer } from 'mobx-react-lite';
 interface LoginProps {
   isShow: boolean;
-  onClose: Function;
+  onClose: () => void;
 }
 
 const Login = function (props: LoginProps) {
@@ -25,7 +25,9 @@ const Login = function (props: LoginProps) {
    * 关闭Login模态
    */
   const handleClose = function () {
-    typeof onClose === 'function' && onClose();
+    if (typeof onClose === 'function') {
+      onClose();
+    }
     setIsShowVerifyCode(false);
   };
 

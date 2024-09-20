@@ -114,6 +114,7 @@ export default async function redirect(
         .end();
     }
   } catch (error) {
+    console.error(error)
     // 处理请求错误
     res.status(500).json({ error: 'Failed to get access token' });
     return;

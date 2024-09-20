@@ -4,7 +4,7 @@ import styles from './index.module.scss'
 
 interface CountProps {
   time: number;
-  onEnd: Function;
+  onEnd: ()=>void;
 }
 const CountDown = function (props: CountProps) {
   const { time, onEnd } = props;
@@ -26,7 +26,9 @@ const CountDown = function (props: CountProps) {
   useEffect(()=>{
     if(count < 0){
       clearInterval(interval.current)
-      typeof onEnd === "function" && onEnd()
+      if(typeof onEnd === "function"){
+        onEnd()
+      }
     }
   },[count,onEnd])
 

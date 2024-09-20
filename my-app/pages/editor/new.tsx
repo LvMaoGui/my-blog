@@ -43,7 +43,11 @@ const NewEditor: NextPage = function () {
         .then((res: any) => {
           if (res.code === '0') {
             message.success('发布成功');
-            userId ? push(`/user/${userId}`) : push('/');
+            if(userId){
+              push(`/user/${userId}`)
+            } else {
+              push('/')
+            }
             // Todo跳转
           } else {
             message.error(res?.msg || '发布失败');

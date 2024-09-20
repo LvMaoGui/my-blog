@@ -57,7 +57,6 @@ export default async function redirect(
       relations: ['user'],
     });
 
-    console.log('---access_token3---', userAuth);
     if (userAuth) {
       // 之前登录过的用户，直接从user里面获取用户信息，并且更新credential
       const user = userAuth.user;
@@ -80,7 +79,7 @@ export default async function redirect(
         .end();
     } else {
       // 用户不存在，从未使用github账号登录过。创建新用户
-      const { login = '', avatar_url = '' } = githubUserInfo;
+      const { login = '', avatar_url = '' } = githubUserInfo as any;
       const user = new User();
       user.nickname = login;
       user.avatar = avatar_url;
@@ -90,7 +89,7 @@ export default async function redirect(
       const userAuth = new UserAuth();
 
       userAuth.identity_type = 'github';
-      userAuth.identifier = githubClientId;
+      userAuth.identifier = githubClientId as string;
       userAuth.credential = access_token;
       userAuth.user = user;
 

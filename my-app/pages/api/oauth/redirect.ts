@@ -32,7 +32,7 @@ export default async function redirect(
       { headers: { Accept: 'application/json' } }
     );
 
-    const access_token = result?.access_token;
+    const {access_token} = result as any || {};
     // 根据access_token获取用户信息
 
     // 获取用户信息的url

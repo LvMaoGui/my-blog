@@ -11,21 +11,21 @@ export function setCookie(
   { userId, avatar, nickname }: CookieInfo
 ) {
   // 登录失效时间 设置为24h
-  const expiress = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
   // 运行访问的路由
   const path = '/';
 
   cookies.set('userId', userId, {
     path,
-    expiress,
+    expires,
   });
   cookies.set('avatar', avatar, {
     path,
-    expiress,
+    expires,
   });
   cookies.set('nickname', nickname, {
     path,
-    expiress,
+    expires,
   });
 }
 

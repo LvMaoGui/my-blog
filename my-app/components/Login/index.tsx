@@ -84,11 +84,11 @@ const Login = function (props: LoginProps) {
     const githubClientId = '6fe217ae3fd9dea74c95';
     const redirectUri = 'http://localhost:3000/api/oauth/redirect';
 
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}`;
+    // window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}`;
 
-    // window.open(
-    //   `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}`
-    // );
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}`
+    );
   };
 
   const handleFormChange = function (e: ChangeEvent<HTMLInputElement>) {

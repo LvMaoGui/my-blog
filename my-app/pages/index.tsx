@@ -1,11 +1,11 @@
 import { AppDataSource } from 'db';
 import { Article, Tag } from 'db/entity';
 import ArticleListItem from '@/components/ArticleListItem';
-import { Divider } from 'antd';
+import { Divider,Spin } from 'antd';
 
 import type { ArticleType } from 'types/model/article-data';
 import type { TagType } from 'types/model/tag-data';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import TagFilter from 'components/TagFilter';
 
 interface HomeProps {
@@ -30,11 +30,26 @@ export async function getServerSideProps() {
 
 const Home = (props: HomeProps) => {
   const { articles, tags } = props;
-  const [articlesData, setArticlesData] = useState(articles);
+  const [articlesData, setArticlesData] = useState<ArticleType[] | null>(null);
+  const [loading,setLoading] = useState(true);
+
+  
+  useEffect(()=>{
+    setArticlesData(articles)
+    setLoading(false)
+  },[
+    articles
+  ])
+  if(loading){
+    return <div className='w-[1080px] max-w-full mx-auto bg-white p-5'>
+      <Spin></Spin>
+    </div>
+  }
+
   return (
-    <div className="content-layout">
+    <div className='w-[1080px] max-w-full mx-auto bg-white p-5'>
       <TagFilter tags={tags} setArticlesData={setArticlesData} />
-      {articlesData.map((art) => (
+      {articlesData?.map((art) => (
         <Fragment key={art.id}>
           <ArticleListItem article={art} key={'ArticleListItem' + art.id} />
           <Divider />

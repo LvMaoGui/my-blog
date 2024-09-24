@@ -52,7 +52,7 @@ const Navbar: NextPage = () => {
   };
 
   const MenuItems: MenuProps['items'] = navs.map(
-    ({ label, value, key }, index) => {
+    ({ label, value, key }) => {
       return {
         label: (
           <Space>

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { navs } from './config';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -24,9 +24,16 @@ import logo from 'public/Logo/logo.png';
 const Navbar: NextPage = () => {
   const store = useStore();
   const { userId, avatar } = store.user.userInfo;
+  const { push, asPath } = useRouter();
+  const defaultSelectedKeys = useMemo(() => {
+    const curItem = navs.find((i: any) => i.value === asPath);    
+    if (curItem) {
+      return [curItem.key];
+    }
+    return [];
+  }, [asPath]);
 
   const [isShowLogin, setIsShowLogin] = useState(false);
-  const { push } = useRouter();
 
   // 跳转到个人页
   const handleGotoPersoalPage = function () {
@@ -44,19 +51,21 @@ const Navbar: NextPage = () => {
     }
   };
 
-  const MenuItems: MenuProps['items'] = navs.map(({ label, value }, index) => {
-    return {
-      label: (
-        <Space>
-          {switchMenuIcon(label)}
-          <Link key={label} href={{ pathname: value }}>
-            {label}
-          </Link>
-        </Space>
-      ),
-      key: value + index,
-    };
-  });
+  const MenuItems: MenuProps['items'] = navs.map(
+    ({ label, value, key }, index) => {
+      return {
+        label: (
+          <Space>
+            {switchMenuIcon(label)}
+            <Link key={label} href={{ pathname: value }}>
+              {label}
+            </Link>
+          </Space>
+        ),
+        key,
+      };
+    }
+  );
 
   // 退出登录
   const handleLogout = function () {
@@ -130,6 +139,7 @@ const Navbar: NextPage = () => {
           style={{ flex: 'auto', minWidth: '0' }}
           items={MenuItems}
           mode="horizontal"
+          defaultSelectedKeys={defaultSelectedKeys}
         ></Menu>
       </section>
       <section className={styles.operationArea}>

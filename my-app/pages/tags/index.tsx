@@ -88,7 +88,7 @@ const Tag = () => {
   ];
 
   useEffect(() => {
-    request('api/tag/get').then((res: any) => {
+    request('api/tags/get').then((res: any) => {
       if (res.code === '0') {
         const { followTags = [], allTags = [] } = res.data;
         setFollowTags(followTags);

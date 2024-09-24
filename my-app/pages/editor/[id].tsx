@@ -99,7 +99,7 @@ const ModifyEditor = function (props: ModifyEditorProps) {
   };
 
   useEffect(() => {
-    request('/api/tag/get').then((res: any) => {
+    request('/api/tags/get').then((res: any) => {
       if (res.code === '0') {
         const { allTags } = res.data;
         setAllTags(allTags);

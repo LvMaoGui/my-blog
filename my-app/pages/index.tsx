@@ -45,7 +45,7 @@ const Home = (props: HomeProps) => {
       <Spin></Spin>
     </div>
   }
-
+  
   return (
     <div className='w-[1080px] max-w-full mx-auto bg-white p-5'>
       <TagFilter tags={tags} setArticlesData={setArticlesData} />

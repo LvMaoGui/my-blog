@@ -17,11 +17,17 @@ export default async function publish(
       where: {
         tags: tagIds?.map((tagId: string) => ({ id: tagId })),
       },
+      order:{
+        create_time:'DESC'
+      }
     });
     //  tagIds?.map((tagId: string) => ({ id: tagId }))
   } else {
     articles = await articleRepo.find({
       relations: ['user', 'tags'],
+      order:{
+        create_time:'DESC'
+      }
     });
   }
 

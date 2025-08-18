@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import type { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
+import type { DataSourceOptions } from 'typeorm';
 import { UserAuth, User, Article, Comment, Tag } from './entity'
 
-const type = process.env.DATABASE_TYPE as MysqlConnectionOptions["type"];
+const type = (process.env.DATABASE_TYPE || 'mysql') as 'mysql';
 const host = process.env.DATABASE_HOST;
 const port = Number(process.env.DATABASE_PORT);
 const username = process.env.DATABASE_USERNAME;

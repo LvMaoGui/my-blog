@@ -1,15 +1,14 @@
 import { AppDataSource } from 'db';
 import { Article } from 'db/entity';
 import type { ArticleType } from 'types/model/article-data';
-import { Input, Button, message } from 'antd';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/components/ui/card';
+import { Input, message } from 'antd';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/components/ui/card';
 import { Badge } from '@/components/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/components/ui/avatar';
 import { Separator } from '@/components/components/ui/separator';
 import { Button as UIButton } from '@/components/components/ui/button';
 import { 
   Eye, 
-  Clock, 
   User, 
   Edit, 
   MessageCircle, 

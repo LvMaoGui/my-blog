@@ -40,4 +40,5 @@ export interface TagAttributes {
   article_count: number;
   users: UserAttributes[];
   articles: ArticleAttributes[];
+  name: string;
 }

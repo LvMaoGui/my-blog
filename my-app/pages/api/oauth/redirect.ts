@@ -6,7 +6,6 @@ import { ironOption } from 'config';
 import type { ISession } from 'pages/api';
 import { User, UserAuth } from 'db/entity';
 import { Cookie } from 'next-cookie';
-import request from 'service/fetch';
 
 import { saveUserInfoToSessionAndCookie } from 'utils';
 
@@ -122,7 +121,7 @@ export default async function redirect(
     const db = await AppDataSource;
     
     // 使用GitHub用户ID作为标识符，而不是客户端ID
-    const { id: githubUserId, login = '', avatar_url = '', name, email } = githubUserInfo;
+    const { id: githubUserId, login = '', avatar_url = '', name } = githubUserInfo;
     
     if (!githubUserId) {
       console.error('GitHub user ID not found');

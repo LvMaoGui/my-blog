@@ -27,6 +27,18 @@ export class Article extends BaseEntity {
   @Column('bit')
   is_delete!: number
 
+  // 新增字段：文章描述
+  @Column({ type: 'text', nullable: false })  // description 可以为空
+  description!: string;
+
+  // 新增字段：封面图片 URL
+  @Column({ type: 'varchar', length: 255, nullable: true })  // cover 可以为空
+  cover!: string;
+
+  // 新增字段：是否开启评论
+  @Column({type:'bit'})// 默认为开启评论
+  is_comment_enabled!: number
+
   @ManyToOne(()=>User,{
     cascade:true
   })

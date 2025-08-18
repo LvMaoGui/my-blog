@@ -9,10 +9,11 @@ export default async function update(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { title = '', content = '', articleId = '', tagIds=[] } = req.body;
-  
+  const { title = '', content = '', articleId = '', tagIds=[], cover, isCommentEnabled, description } = req.body;
+
   // 连接数据库
   const db = await AppDataSource;
+  // debugger
   const articleRepo = await db.getRepository(Article);
   const tagRepo = await db.getRepository(Tag)
 
@@ -30,6 +31,9 @@ export default async function update(
   if(article){
     article.title = title;
     article.content = content;
+    article.cover = cover;
+    article.is_comment_enabled= isCommentEnabled;
+    article.description = description;
     article.update_time = new Date();
   } else {
     res.status(200).json({ ...EXCEPTION_ARTICLE.NOT_FOUND });

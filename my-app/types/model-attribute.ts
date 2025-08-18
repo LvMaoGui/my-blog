@@ -17,6 +17,9 @@ export interface ArticleAttributes {
   user: UserAttributes;
   comments: CommentAttributes[];
   tags: TagAttributes[];
+  description: string;
+  is_comment_enabled: number;
+  cover: string;
 }
 
 export interface CommentAttributes {

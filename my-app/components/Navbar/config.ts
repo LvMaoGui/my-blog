@@ -5,13 +5,18 @@ export const navs = [
     key: 'home'
   },
   {
-    label: '咨询',
-    value: '/info',
-    key:'info'
+    label: '项目作品',
+    value: '/projects',
+    key: 'projects'
   },
   {
-    label: '标签',
-    value: '/tags',
-    key:'tags'
+    label: '文章',
+    value: '/articles',
+    key: 'articles'
+  },
+  {
+    label: '联系我',
+    value: '/contact',
+    key: 'contact'
   },
 ];

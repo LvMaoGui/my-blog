@@ -14,6 +14,9 @@ export type ArticleType = Pick<
   | 'views'
   | 'comments'
   | 'tags'
+  | 'description'
+  | 'is_comment_enabled'
+  | 'cover'
 > & {
   user: UserType,
   comments: CommentType[],

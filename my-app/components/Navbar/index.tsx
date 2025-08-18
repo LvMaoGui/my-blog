@@ -116,33 +116,28 @@ const Navbar: NextPage = () => {
 
   return (
     <div className={styles.navbar}>
-      <section className={styles.logoArea}>
+      <section className='hidden sm:flex flex-none'>
         <Image
           className={styles.logo}
           width={120}
           height={60}
           src={logo.src}
           alt="logo"
+          onClick={()=>{
+            push('/')
+          }}
         />
       </section>
-      <section className={styles.linkArea}>
-        {/* {navs?.map((nav) => (
-          <Link
-            className={pathname === nav.value ? styles.active : ''}
-            key={nav?.label}
-            href={{ pathname: nav.value }}
-          >
-            {nav.label}
-          </Link>
-        ))} */}
+      <section className={`${styles.linkArea} flex-auto h-16`}>
         <Menu
-          style={{ flex: 'auto', minWidth: '0' }}
           items={MenuItems}
+          className='min-w-0'
           mode="horizontal"
+          overflowedIndicator
           defaultSelectedKeys={defaultSelectedKeys}
         ></Menu>
       </section>
-      <section className={styles.operationArea}>
+      <section className='flex-none'>
         <Space>
           <Button onClick={handleGotoEditorPage}>写文章</Button>
           {userId ? (

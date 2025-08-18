@@ -57,7 +57,7 @@ const NewEditor: NextPage = function () {
   };
 
   useEffect(() => {
-    request('/api/tags/get').then((res: any) => {
+    request.get('/api/tags/get').then((res) => {
       if (res.code === '0') {
         const { allTags } = res.data;
         setAllTags(allTags);

@@ -45,7 +45,7 @@ const UserProfile = function () {
   };
 
   useEffect(() => {
-    request('/api/user/detail').then((res: any) => {
+    request.get('/api/user/detail').then((res) => {
       if (res.code === '0') {
         const {avatar} = res.data.userInfo
         form.setFieldsValue(res.data.userInfo);

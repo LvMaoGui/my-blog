@@ -14,109 +14,211 @@ export default async function redirect(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // 发送请求获取access_token
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
     const session: ISession = await getIronSession(req, res, ironOption);
+    const { code, state, error: oauthError } = req.query;
 
-    // http://localhost:3000/api/oauth/redirect
-    const { code } = req.query;
+    // 检查OAuth错误
+    if (oauthError) {
+      console.error('OAuth error:', oauthError);
+      return res.status(400).send(`
+        <script>
+          window.opener?.postMessage({
+            type: 'OAUTH_ERROR',
+            error: 'GitHub授权被拒绝或取消'
+          }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+          window.close();
+        </script>
+      `);
+    }
+
+    // 验证必需参数
+    if (!code || !state) {
+      console.error('Missing required parameters:', { code: !!code, state: !!state });
+      return res.status(400).send(`
+        <script>
+          window.opener?.postMessage({
+            type: 'OAUTH_ERROR',
+            error: '缺少必需的授权参数'
+          }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+          window.close();
+        </script>
+      `);
+    }
 
     const githubClientId = process.env.GITHUB_CLIENT_ID;
     const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
 
-    // 获取令牌的url
-    const getAssessTokenUrl = `https://github.com/login/oauth/access_token?client_id=${githubClientId}&client_secret=${githubClientSecret}&code=${code}`;
-    const result = await request.post(
-      getAssessTokenUrl,
-      {},
-      { headers: { Accept: 'application/json' } }
-    );
+    if (!githubClientId || !githubClientSecret) {
+      console.error('Missing GitHub OAuth configuration');
+      return res.status(500).send(`
+        <script>
+          window.opener?.postMessage({
+            type: 'OAUTH_ERROR',
+            error: 'GitHub OAuth配置未设置'
+          }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+          window.close();
+        </script>
+      `);
+    }
 
-    const {access_token} = result as any || {};
-    // 根据access_token获取用户信息
+    // 获取access_token
+    const tokenParams = new URLSearchParams({
+      client_id: githubClientId,
+      client_secret: githubClientSecret,
+      code: code as string,
+    });
 
-    // 获取用户信息的url
-    const getUserInfoUrl = 'https://api.github.com/user';
-
-    // 发送请求获取githun用户信息
-    const githubUserInfo = await request.get(getUserInfoUrl, {
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
       headers: {
-        accept: 'application/json',
-        Authorization: `token ${access_token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: tokenParams.toString(),
+    });
+
+    if (!tokenResponse.ok) {
+      throw new Error(`GitHub token request failed: ${tokenResponse.status}`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    const { access_token, error: tokenError } = tokenData;
+
+    if (tokenError || !access_token) {
+      console.error('Token exchange error:', tokenError);
+      return res.status(400).send(`
+        <script>
+          window.opener?.postMessage({
+            type: 'OAUTH_ERROR',
+            error: '获取GitHub访问令牌失败'
+          }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+          window.close();
+        </script>
+      `);
+    }
+
+    // 获取GitHub用户信息
+    const userResponse = await fetch('https://api.github.com/user', {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'Authorization': `Bearer ${access_token}`,
+        'User-Agent': 'MyBlog-App',
       },
     });
+
+    if (!userResponse.ok) {
+      throw new Error(`GitHub user request failed: ${userResponse.status}`);
+    }
+
+    const githubUserInfo = await userResponse.json();
 
 
     const cookies = Cookie.fromApiRoute(req, res);
     const db = await AppDataSource;
+    
+    // 使用GitHub用户ID作为标识符，而不是客户端ID
+    const { id: githubUserId, login = '', avatar_url = '', name, email } = githubUserInfo;
+    
+    if (!githubUserId) {
+      console.error('GitHub user ID not found');
+      return res.status(400).send(`
+        <script>
+          window.opener?.postMessage({
+            type: 'OAUTH_ERROR',
+            error: '无法获取GitHub用户信息'
+          }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+          window.close();
+        </script>
+      `);
+    }
+
+    // 查找现有用户认证记录
     const userAuth = await db.getRepository(UserAuth).findOne({
       where: {
         identity_type: 'github',
-        identifier: githubClientId,
+        identifier: githubUserId.toString(),
       },
       relations: ['user'],
     });
 
+    let user;
+    let isNewUser = false;
+
     if (userAuth) {
-      // 之前登录过的用户，直接从user里面获取用户信息，并且更新credential
-      const user = userAuth.user;
-      const { id, nickname, avatar } = user;
-
+      // 现有用户，更新访问令牌和用户信息
+      user = userAuth.user;
       userAuth.credential = access_token;
-
-      // 保存用户基本信息到cookie和session
-      await saveUserInfoToSessionAndCookie(cookies, session, {
-        userId: id,
-        nickname,
-        avatar,
-      });
-
-      // 重定向到根路径
-      res
-        .writeHead(302, {
-          Location: 'http://localhost:3000',
-        })
-        .end();
+      
+      // 更新用户信息（GitHub信息可能已更改）
+      user.nickname = name || login || user.nickname;
+      user.avatar = avatar_url || user.avatar;
+      
+      await db.getRepository(UserAuth).save(userAuth);
+      await db.getRepository(User).save(user);
     } else {
-      // 用户不存在，从未使用github账号登录过。创建新用户
-      const { login = '', avatar_url = '' } = githubUserInfo as any;
-      const user = new User();
-      user.nickname = login;
-      user.avatar = avatar_url;
+      // 新用户，创建用户和认证记录
+      isNewUser = true;
+      
+      user = new User();
+      user.nickname = name || login || `GitHub用户${githubUserId}`;
+      user.avatar = avatar_url || '';
       user.job = '暂无';
       user.introduce = '暂无';
 
-      const userAuth = new UserAuth();
+      const newUserAuth = new UserAuth();
+      newUserAuth.identity_type = 'github';
+      newUserAuth.identifier = githubUserId.toString();
+      newUserAuth.credential = access_token;
+      newUserAuth.user = user;
 
-      userAuth.identity_type = 'github';
-      userAuth.identifier = githubClientId as string;
-      userAuth.credential = access_token;
-      userAuth.user = user;
-
-      const userAuthsRepo = await db.getRepository(UserAuth);
-
-      const resUserAuth = await userAuthsRepo.save(userAuth);
-
-      const { id, nickname, avatar } = resUserAuth.user;
-
-      // 保存用户基本信息到cookie和session
-      await saveUserInfoToSessionAndCookie(cookies, session, {
-        userId: id,
-        nickname,
-        avatar,
-      });
-
-      // 重定向到根路径
-      res
-        .writeHead(302, {
-          Location: 'http://localhost:3000',
-        })
-        .end();
+      const savedUserAuth = await db.getRepository(UserAuth).save(newUserAuth);
+      user = savedUserAuth.user;
     }
+
+    // 保存用户信息到session和cookie
+    await saveUserInfoToSessionAndCookie(cookies, session, {
+      userId: user.id,
+      nickname: user.nickname,
+      avatar: user.avatar,
+    });
+
+    // 发送成功消息给前端并关闭弹窗
+    const successMessage = isNewUser ? '注册成功！' : '登录成功！';
+    
+    res.status(200).send(`
+      <script>
+        window.opener?.postMessage({
+          type: 'OAUTH_SUCCESS',
+          user: {
+            userId: ${user.id},
+            nickname: '${user.nickname?.replace(/'/g, "\\'") || ''}',
+            avatar: '${user.avatar?.replace(/'/g, "\\'") || ''}'
+          },
+          message: '${successMessage}'
+        }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+        window.close();
+      </script>
+    `);
+    
   } catch (error) {
-    console.error(error)
-    // 处理请求错误
-    res.status(500).json({ error: 'Failed to get access token' });
-    return;
+    console.error('OAuth redirect error:', error);
+    
+    // 发送错误消息给前端
+    const errorMessage = error instanceof Error ? error.message : '登录过程中发生未知错误';
+    
+    res.status(500).send(`
+      <script>
+        window.opener?.postMessage({
+          type: 'OAUTH_ERROR',
+          error: '${errorMessage.replace(/'/g, "\\'")}'  
+        }, '${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}');
+        window.close();
+      </script>
+    `);
   }
 }

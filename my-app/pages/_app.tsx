@@ -3,6 +3,9 @@ import type { AppProps } from 'next/app';
 import Layout from 'components/Layout';
 import { StoreProvide } from 'store';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { Toaster } from '@/components/components/ui/toaster';
+import { ThemeProvider } from '@/components/hooks/use-theme';
+import { Fragment } from 'react';
 
 interface MyAppProps extends AppProps {
   initialValue: Record<string, any>;
@@ -23,7 +26,19 @@ function MyApp({ Component, pageProps, initialValue }: MyAppProps) {
 
   return (
     <ErrorBoundary>
-      <StoreProvide initialValue={initialValue}>{renderLayout()}</StoreProvide>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <StoreProvide initialValue={initialValue}>
+          <Fragment>
+            {renderLayout()}
+            <Toaster />
+          </Fragment>
+        </StoreProvide>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

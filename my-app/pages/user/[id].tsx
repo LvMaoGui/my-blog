@@ -15,7 +15,6 @@ import styles from './index.module.scss';
 export async function getStaticPaths() {
   const db = await AppDataSource;
   const users = await db.getRepository(User).find();
-  console.log('users😀', users);
 
   const userIds = users.map((user) => {
     return { params: { id: String(user.id) } };
@@ -94,11 +93,8 @@ const UserDetail = function (props: UserDetailProps) {
     <div className={styles.userDetail}>
       <div className={styles.left}>
         <div className={styles.userInfo}>
-          <Avatar
-            className={styles.avatar}
-            src={'.' + userInfo.avatar}
-            size={90}
-          />
+        <Avatar src={userInfo.avatar} size={90} />
+
           <div>
             <div className={styles.nickname}>{userInfo.nickname}</div>
             <div className={styles.desc}>

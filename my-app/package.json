@@ -40,6 +40,7 @@
     "next-cookie": "^2.8.0",
     "next-remove-imports": "^1.0.12",
     "qiniu": "^7.13.0",
+    "qiniu-js": "^3.4.3",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "reflect-metadata": "^0.1.13",

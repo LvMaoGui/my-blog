@@ -17,8 +17,8 @@ const ArticleListItem = function (props: ArticleListItemProps) {
   const contentPreview = markdownToTxt(article.content).slice(0, 200) + '...';
 
   return (
-    <Link href={`/article/${article.id}`} className="block group">
-      <Card className="bg-card/30 border-border backdrop-blur-sm hover:bg-card/50 hover:border-border/80 transition-all duration-300 cursor-pointer">
+    <Card className="bg-card/30 border-border backdrop-blur-sm hover:bg-card/50 hover:border-border/80 transition-all duration-300 cursor-pointer group">
+      <Link href={`/article/${article.id}`} className="block">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between space-x-4">
             <div className="flex-1 space-y-3">
@@ -110,8 +110,8 @@ const ArticleListItem = function (props: ArticleListItemProps) {
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 };
 

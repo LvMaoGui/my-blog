@@ -60,8 +60,8 @@ const Login = (props: LoginProps) => {
         to: form.phone,
         templateId: 1,
       })
-      .then((res: { [code: string]: any }) => {
-        if (res?.code === 0) {
+      .then((res) => {
+        if (res?.code === '0') {
           setIsShowVerifyCode(true)
           toast({
             title: "验证码已发送",
@@ -96,7 +96,7 @@ const Login = (props: LoginProps) => {
         ...form,
         identity_type: "phone",
       })
-      .then((res: Record<string, any>) => {
+      .then((res) => {
         if (res?.code === "0") {
           store.user.setUserInfo(res.data)
           toast({
@@ -276,7 +276,7 @@ const Login = (props: LoginProps) => {
       .post("/api/user/testlogin", {
         phone: "13800138000",
       })
-      .then((res: Record<string, any>) => {
+      .then((res) => {
         if (res?.code === "0") {
           store.user.setUserInfo(res.data)
           toast({

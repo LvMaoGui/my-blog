@@ -53,7 +53,7 @@ const qiniuUploader = async (domain: any, getUptoken: any, file: any, filePath: 
 };
 
 const getQiniuPublicToken = () => {
-  return request('/api/qiniu/getUploadToken',{
+  return request.get('/api/qiniu/getUploadToken', {
     params: {category:'public'},
   })
     .then((res) => ({
@@ -65,7 +65,7 @@ const getQiniuPublicToken = () => {
 };
 
 const getQiniuPrivateToken = () => {
-  return request('/api/qiniu/getUploadToken',{
+  return request.get('/api/qiniu/getUploadToken', {
     params: {category:'private'},
   })
     .then((res) => ({

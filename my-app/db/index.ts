@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
   username, //数据库用户名
   password, // 数据库用户密码
   database, //使用的数据库名字
-  synchronize: true, // 是否同步，如果为true，新建的实体会更新建表或更新字段
+  synchronize: false, // 是否同步，如果为true，新建的实体会更新建表或更新字段
   logging: true, // 是否开启日志 为true 为打印执行的sql
   entities: [UserAuth,User,Comment,Article,Tag], // 加载entity目录下的ts文件为model
 }).initialize();
